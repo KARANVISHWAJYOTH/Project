@@ -21,3 +21,4 @@ print("\nAll models are working correctly!")
 print("\nYou can now run: python manage.py runserver")
 
 
+

@@ -117,3 +117,4 @@ python manage.py check --deploy
 5. Try deleting `db.sqlite3` and running migrations again (this will delete all data)
 
 
+

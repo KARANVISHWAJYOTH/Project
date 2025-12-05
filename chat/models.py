@@ -18,3 +18,4 @@ class Message(models.Model):
         return f"From {self.sender.username} to {self.receiver.username}"
 
 
+
