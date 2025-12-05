@@ -5,7 +5,6 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from .models import Listing, Category, SearchHistory
 from .forms import ListingForm, SearchForm
-from .services import fetch_external_products
 from .image_search import search_images
 
 
@@ -25,9 +24,6 @@ def category_listings(request, slug):
     
     category = get_object_or_404(Category, slug=slug)
     listings = Listing.objects.filter(category=category, is_sold=False).order_by('-created_at')
-
-    # Fetch related visuals for this category (for richer browsing)
-    image_matches = search_images(category.name, limit=8)
     
     # Pagination
     paginator = Paginator(listings, 12)
@@ -37,8 +33,7 @@ def category_listings(request, slug):
     return render(request, 'listings/category_listings.html', {
         'category': category,
         'listings': page_obj,
-        'page_obj': page_obj,
-        'image_matches': image_matches,
+        'page_obj': page_obj
     })
 
 
@@ -123,17 +118,14 @@ def search_listings(request):
     
     form = SearchForm(request.GET)
     listings = Listing.objects.filter(is_sold=False).order_by('-created_at')
-    searched_query = ''
+    query = None
+    image_urls = []
     
-    external_results = []
-    image_matches = []
-
     if form.is_valid():
         query = form.cleaned_data.get('query')
         category = form.cleaned_data.get('category')
         min_price = form.cleaned_data.get('min_price')
         max_price = form.cleaned_data.get('max_price')
-        searched_query = query or ''
         
         # Apply filters
         if query:
@@ -150,22 +142,22 @@ def search_listings(request):
         if max_price:
             listings = listings.filter(price__lte=max_price)
         
-        results_count = listings.count()
         # Save search history
         if request.user.is_authenticated:
             SearchHistory.objects.create(
                 user=request.user,
-                query=searched_query,
+                query=query or '',
                 category=category,
                 min_price=min_price,
                 max_price=max_price,
-                results_count=results_count
+                results_count=listings.count()
             )
-        if searched_query and results_count == 0:
-            external_results = fetch_external_products(searched_query, limit=4)
-            image_matches = search_images(searched_query, limit=6)
-    else:
-        results_count = listings.count()
+    
+    # Get relevant images for the search query
+    if query:
+        search_results = search_images(query, limit=12)
+        # Extract image URLs from the search results
+        image_urls = [img.get('url') for img in search_results if img.get('url')]
     
     # Pagination
     paginator = Paginator(listings, 12)
@@ -176,10 +168,8 @@ def search_listings(request):
         'form': form,
         'listings': page_obj,
         'page_obj': page_obj,
-        'searched_query': searched_query,
-        'results_count': results_count,
-        'external_results': external_results,
-        'image_matches': image_matches,
+        'search_query': query,
+        'image_urls': image_urls
     })
 
 

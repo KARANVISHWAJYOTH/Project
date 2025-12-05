@@ -13,7 +13,13 @@
 <div class="listings-grid">
     {% for listing in listings %}
     <a href="{% url 'listings:listing_detail' listing.pk %}" class="listing-card">
-        <img src="{{ listing.image_url }}" alt="{{ listing.title }}" class="listing-image">
+        {% if listing.image %}
+        <img src="{{ listing.image.url }}" alt="{{ listing.title }}" class="listing-image">
+        {% else %}
+        <!-- Display a relevant image based on the listing title when no image is uploaded -->
+        <div class="listing-image" style="background-image: url('https://source.unsplash.com/600x400/?{{ listing.title|urlencode }}'); background-size: cover; background-position: center;">
+        </div>
+        {% endif %}
         <div class="listing-info">
             <h3 class="listing-title">{{ listing.title }}</h3>
             <div class="listing-category">{{ listing.category.name }}</div>
@@ -21,18 +27,17 @@
             <div class="listing-price">{{ listing.price_display }}</div>
             <div class="listing-meta">
                 <span>{% if listing.is_sold %}Sold{% else %}Available{% endif %}</span>
-                <span>{{ listing.created_at|date:"M d, Y" }}</span>
             </div>
         </div>
     </a>
     {% endfor %}
 </div>
+
 {% else %}
 <div class="empty-state">
-    <div class="empty-state-icon">📝</div>
+    <div class="empty-state-icon">📭</div>
     <p>You haven't posted any listings yet.</p>
     <a href="{% url 'listings:create_listing' %}" class="btn btn-primary" style="margin-top: 1rem;">Post Your First Item</a>
 </div>
 {% endif %}
 {% endblock %}
-

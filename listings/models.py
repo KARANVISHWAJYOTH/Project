@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.utils.text import slugify
 
 
 class Category(models.Model):
@@ -40,15 +39,6 @@ class Listing(models.Model):
 
     def get_absolute_url(self):
         return reverse('listings:listing_detail', kwargs={'pk': self.pk})
-
-    @property
-    def image_url(self):
-        if self.image:
-            return self.image.url
-        keyword = self.category.slug if self.category else slugify(self.title)
-        if not keyword:
-            keyword = 'marketplace'
-        return f"https://source.unsplash.com/600x400/?{keyword}"
 
     @property
     def price_display(self):

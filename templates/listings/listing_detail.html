@@ -7,7 +7,13 @@
 <div class="listing-detail-container">
     <div class="listing-detail-header">
         <div>
-            <img src="{{ listing.image_url }}" alt="{{ listing.title }}" class="listing-detail-image">
+            {% if listing.image %}
+            <img src="{{ listing.image.url }}" alt="{{ listing.title }}" class="listing-detail-image">
+            {% else %}
+            <!-- Display a relevant image based on the listing title when no image is uploaded -->
+            <div class="listing-detail-image" style="background-image: url('https://source.unsplash.com/600x400/?{{ listing.title|urlencode }}'); background-size: cover; background-position: center;">
+            </div>
+            {% endif %}
         </div>
         <div class="listing-detail-info">
             <h1>{{ listing.title }}</h1>
@@ -39,7 +45,13 @@
     <div class="listings-grid">
         {% for related in related_listings %}
         <a href="{% url 'listings:listing_detail' related.pk %}" class="listing-card">
-        <img src="{{ related.image_url }}" alt="{{ related.title }}" class="listing-image">
+        {% if related.image %}
+        <img src="{{ related.image.url }}" alt="{{ related.title }}" class="listing-image">
+        {% else %}
+        <!-- Display a relevant image based on the listing title when no image is uploaded -->
+        <div class="listing-image" style="background-image: url('https://source.unsplash.com/600x400/?{{ related.title|urlencode }}'); background-size: cover; background-position: center;">
+        </div>
+        {% endif %}
             <div class="listing-info">
                 <h3 class="listing-title">{{ related.title }}</h3>
                 <div class="listing-price">{{ related.price_display }}</div>
@@ -50,4 +62,3 @@
 </div>
 {% endif %}
 {% endblock %}
-

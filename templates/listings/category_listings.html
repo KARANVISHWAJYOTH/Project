@@ -13,7 +13,13 @@
 <div class="listings-grid">
     {% for listing in listings %}
     <a href="{% url 'listings:listing_detail' listing.pk %}" class="listing-card">
-        <img src="{{ listing.image_url }}" alt="{{ listing.title }}" class="listing-image">
+        {% if listing.image %}
+        <img src="{{ listing.image.url }}" alt="{{ listing.title }}" class="listing-image">
+        {% else %}
+        <!-- Display a relevant image based on the listing title when no image is uploaded -->
+        <div class="listing-image" style="background-image: url('https://source.unsplash.com/600x400/?{{ listing.title|urlencode }}'); background-size: cover; background-position: center;">
+        </div>
+        {% endif %}
         <div class="listing-info">
             <h3 class="listing-title">{{ listing.title }}</h3>
             <div class="listing-category">{{ listing.category.name }}</div>
@@ -31,40 +37,22 @@
 {% if page_obj.has_other_pages %}
 <div class="pagination">
     {% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo; Previous</a>
     {% endif %}
     
     <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
     
     {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next &raquo;</a>
     {% endif %}
 </div>
 {% endif %}
 
 {% else %}
 <div class="empty-state">
-    <div class="empty-state-icon">🔍</div>
-    <p>No listings found in this category.</p>
+    <div class="empty-state-icon">📭</div>
+    <p>No listings found in this category yet.</p>
     <a href="{% url 'listings:create_listing' %}" class="btn btn-primary" style="margin-top: 1rem;">Post First Item</a>
 </div>
 {% endif %}
-
-{% if image_matches %}
-<div style="margin-top: 3rem;">
-    <h2 style="color: var(--dark-color); margin-bottom: 1rem;">More from around the web</h2>
-    <div class="listings-grid">
-        {% for img in image_matches %}
-        <div class="listing-card">
-            <img src="{{ img.url }}" alt="{{ img.title }}" class="listing-image">
-            <div class="listing-info">
-                <h3 class="listing-title">{{ img.title }}</h3>
-                <div class="listing-category">{% if img.photographer %}Photo by {{ img.photographer }}{% else %}Related image{% endif %}</div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
 {% endblock %}
-

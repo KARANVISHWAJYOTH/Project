@@ -1,0 +1,97 @@
+===========================================
+CLASSIFIED MARKETPLACE - COMPLETE INSTALLATION GUIDE
+===========================================
+
+STEP 1: Install Python Dependencies
+-----------------------------------
+pip install -r requirements.txt
+
+This installs:
+- Django 5.2.8 (Web framework)
+- Pillow 11.0.0 (Image processing)
+- django-filter 24.3 (Search filtering)
+- requests 2.32.3 (HTTP requests)
+
+STEP 2: Create Database Tables
+-------------------------------
+python manage.py makemigrations
+python manage.py migrate
+
+STEP 3: Create Default Categories
+----------------------------------
+python manage.py create_categories
+
+This creates 11 categories:
+- Laptops, Phones, Cars, Furniture, Electronics
+- Clothing, Books, Sports, Toys, Home & Garden, Other
+
+STEP 4: (Optional) Create Admin User
+------------------------------------
+python manage.py createsuperuser
+
+Follow prompts to set username, email, and password.
+This allows access to /admin/ panel.
+
+STEP 5: Run Development Server
+------------------------------
+python manage.py runserver
+
+The website will be available at:
+http://127.0.0.1:8000/
+
+===========================================
+QUICK START (Copy & Paste All At Once)
+===========================================
+
+pip install -r requirements.txt
+python manage.py makemigrations
+python manage.py migrate
+python manage.py create_categories
+python manage.py runserver
+
+===========================================
+VERIFICATION COMMANDS
+===========================================
+
+Check if everything is working:
+python manage.py check
+
+Test database setup:
+python manage.py shell
+>>> from listings.models import Category
+>>> Category.objects.count()
+# Should return 11
+
+Exit shell:
+>>> exit()
+
+===========================================
+TROUBLESHOOTING
+===========================================
+
+If "pip" not found:
+python -m pip install -r requirements.txt
+
+If "python" not found:
+python3 -m pip install -r requirements.txt
+# OR
+py -m pip install -r requirements.txt
+
+If port 8000 is busy:
+python manage.py runserver 8080
+
+If migrations error:
+python manage.py makemigrations
+python manage.py migrate --run-syncdb
+
+===========================================
+AFTER INSTALLATION
+===========================================
+
+1. Open browser: http://127.0.0.1:8000/
+2. Sign up for a new account
+3. Login and start posting items!
+
+===========================================
+
+
