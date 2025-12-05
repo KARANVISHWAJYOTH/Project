@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load category_images %}
 
 {% block title %}{{ category.name }} - Classified Marketplace{% endblock %}
 
@@ -16,9 +17,8 @@
         {% if listing.image %}
         <img src="{{ listing.image.url }}" alt="{{ listing.title }}" class="listing-image">
         {% else %}
-        <!-- Display a relevant image based on the listing title when no image is uploaded -->
-        <div class="listing-image" style="background-image: url('https://source.unsplash.com/600x400/?{{ listing.title|urlencode }}'); background-size: cover; background-position: center;">
-        </div>
+        <!-- Display a placeholder image when no image is uploaded -->
+        <img src="https://picsum.photos/seed/{{ listing.pk }}/600/400" alt="{{ listing.title }}" class="listing-image">
         {% endif %}
         <div class="listing-info">
             <h3 class="listing-title">{{ listing.title }}</h3>
@@ -50,7 +50,11 @@
 
 {% else %}
 <div class="empty-state">
-    <div class="empty-state-icon">📭</div>
+    <div class="empty-state-images">
+        <img src="{% get_category_image category.slug 0 %}" alt="{{ category.name }}" class="empty-state-img">
+        <img src="{% get_category_image category.slug 1 %}" alt="{{ category.name }}" class="empty-state-img">
+        <img src="{% get_category_image category.slug 2 %}" alt="{{ category.name }}" class="empty-state-img">
+    </div>
     <p>No listings found in this category yet.</p>
     <a href="{% url 'listings:create_listing' %}" class="btn btn-primary" style="margin-top: 1rem;">Post First Item</a>
 </div>
