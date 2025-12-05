@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Chat with {{ other_user.username }} - Classified Marketplace{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Chat with {{ other_user.username }}</h1>
+    {% if listing %}
+    <p>About: <a href="{% url 'listings:listing_detail' listing.pk %}">{{ listing.title }}</a></p>
+    {% endif %}
+</div>
+
+<div class="chat-container">
+    <div class="chat-list">
+        <a href="{% url 'chat:chat_list' %}" class="chat-item">
+            ← Back to Conversations
+        </a>
+    </div>
+    <div class="chat-messages">
+        <div class="messages-list">
+            {% for message in messages %}
+            <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
+                <strong>{% if message.sender == user %}You{% else %}{{ message.sender.username }}{% endif %}:</strong>
+                <p>{{ message.content|linebreaks }}</p>
+                <small style="opacity: 0.7;">{{ message.sent_at|date:"M d, Y H:i" }}</small>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <p>No messages yet. Start the conversation!</p>
+            </div>
+            {% endfor %}
+        </div>
+        <form method="POST" class="message-form">
+            {% csrf_token %}
+            {{ form.content }}
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Auto-scroll to bottom of messages
+    const messagesList = document.querySelector('.messages-list');
+    if (messagesList) {
+        messagesList.scrollTop = messagesList.scrollHeight;
+    }
+</script>
+{% endblock %}
+
+

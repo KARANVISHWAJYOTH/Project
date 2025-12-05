@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Listing - Classified Marketplace{% endblock %}
+
+{% block content %}
+<div class="listing-detail-container">
+    <h1>Delete Listing</h1>
+    <p>Are you sure you want to delete "<strong>{{ listing.title }}</strong>"?</p>
+    <p style="color: var(--danger-color);">This action cannot be undone.</p>
+
+    <form method="POST" style="margin-top: 2rem;">
+        {% csrf_token %}
+        <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{% url 'listings:listing_detail' listing.pk %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+

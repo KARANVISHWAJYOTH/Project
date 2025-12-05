@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ listing.title }} - Classified Marketplace{% endblock %}
+
+{% block content %}
+<div class="listing-detail-container">
+    <div class="listing-detail-header">
+        <div>
+            <img src="{{ listing.image_url }}" alt="{{ listing.title }}" class="listing-detail-image">
+        </div>
+        <div class="listing-detail-info">
+            <h1>{{ listing.title }}</h1>
+            <div class="listing-detail-price">{{ listing.price_display }}</div>
+            <p><strong>Category:</strong> {{ listing.category.icon }} {{ listing.category.name }}</p>
+            <p><strong>Seller:</strong> {{ listing.owner.username }}</p>
+            <p><strong>Posted:</strong> {{ listing.created_at|date:"F d, Y" }}</p>
+            
+            <div class="listing-actions">
+                {% if listing.owner != user %}
+                <a href="{% url 'chat:start_chat' listing.pk %}" class="btn btn-primary">Contact Seller</a>
+                {% else %}
+                <a href="{% url 'listings:edit_listing' listing.pk %}" class="btn btn-secondary">Edit Listing</a>
+                <a href="{% url 'listings:delete_listing' listing.pk %}" class="btn btn-danger">Delete Listing</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="listing-description-section">
+        <h2>Description</h2>
+        <p>{{ listing.description|linebreaks }}</p>
+    </div>
+</div>
+
+{% if related_listings %}
+<div style="margin-top: 3rem;">
+    <h2>More from {{ listing.category.name }}</h2>
+    <div class="listings-grid">
+        {% for related in related_listings %}
+        <a href="{% url 'listings:listing_detail' related.pk %}" class="listing-card">
+        <img src="{{ related.image_url }}" alt="{{ related.title }}" class="listing-image">
+            <div class="listing-info">
+                <h3 class="listing-title">{{ related.title }}</h3>
+                <div class="listing-price">{{ related.price_display }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+

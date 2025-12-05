@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Classified Marketplace</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="welcome-card">
+            <h1 class="welcome-title">Welcome to Classified Marketplace</h1>
+            
+            <div class="form-tabs">
+                <button class="tab-button active" onclick="switchTab('login')">Login</button>
+                <button class="tab-button" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-tab" class="tab-content active">
+                <form method="POST" action="{% url 'accounts:welcome' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="login" value="1">
+                    
+                    <div class="form-group">
+                        <label for="id_username">Username</label>
+                        {{ login_form.username }}
+                        {% if login_form.username.errors %}
+                            <div class="alert alert-error">{{ login_form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password">Password</label>
+                        {{ login_form.password }}
+                        {% if login_form.password.errors %}
+                            <div class="alert alert-error">{{ login_form.password.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                </form>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-tab" class="tab-content">
+                <form method="POST" action="{% url 'accounts:welcome' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="signup" value="1">
+                    
+                    <div class="form-group">
+                        <label for="id_username">Username</label>
+                        {{ signup_form.username }}
+                        {% if signup_form.username.errors %}
+                            <div class="alert alert-error">{{ signup_form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_email">Email</label>
+                        {{ signup_form.email }}
+                        {% if signup_form.email.errors %}
+                            <div class="alert alert-error">{{ signup_form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password1">Password</label>
+                        {{ signup_form.password1 }}
+                        {% if signup_form.password1.errors %}
+                            <div class="alert alert-error">{{ signup_form.password1.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password2">Confirm Password</label>
+                        {{ signup_form.password2 }}
+                        {% if signup_form.password2.errors %}
+                            <div class="alert alert-error">{{ signup_form.password2.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary btn-block">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab
+            if (tab === 'login') {
+                document.getElementById('login-tab').classList.add('active');
+                document.querySelectorAll('.tab-button')[0].classList.add('active');
+            } else {
+                document.getElementById('signup-tab').classList.add('active');
+                document.querySelectorAll('.tab-button')[1].classList.add('active');
+            }
+        }
+
+        {% if messages %}
+        {% for message in messages %}
+        {% if forloop.first %}
+        document.addEventListener('DOMContentLoaded', function() {
+            const toast = document.createElement('div');
+            toast.className = 'toast show';
+            toast.textContent = "{{ message|escapejs }}";
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        });
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </script>
+</body>
+</html>
+

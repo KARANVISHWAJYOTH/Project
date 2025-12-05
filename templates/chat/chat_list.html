@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Messages - Classified Marketplace{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Messages</h1>
+    <p>Your conversations</p>
+</div>
+
+<div class="chat-container">
+    <div class="chat-list">
+        {% if conversations %}
+        {% for conv in conversations %}
+        <a href="{% url 'chat:chat_detail' conv.user.id %}" class="chat-item">
+            <strong>{{ conv.user.username }}</strong>
+            {% if conv.last_message %}
+            <p style="font-size: 0.9rem; color: var(--gray); margin-top: 0.5rem;">
+                {{ conv.last_message.content|truncatewords:10 }}
+            </p>
+            <small style="color: var(--gray);">{{ conv.last_message.sent_at|timesince }} ago</small>
+            {% endif %}
+        </a>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">💬</div>
+            <p>No conversations yet.</p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="chat-messages">
+        <div class="empty-state">
+            <div class="empty-state-icon">💬</div>
+            <p>Select a conversation to start chatting</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

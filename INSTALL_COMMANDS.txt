@@ -1,0 +1,68 @@
+===========================================
+CLASSIFIED MARKETPLACE - INSTALLATION COMMANDS
+===========================================
+
+Copy and paste these commands one by one in your terminal/command prompt:
+
+1. Install Python Dependencies:
+   pip install -r requirements.txt
+
+2. Create Database Tables:
+   python manage.py makemigrations
+   python manage.py migrate
+
+3. Create Default Categories:
+   python manage.py create_categories
+
+4. (Optional) Create Admin User:
+   python manage.py createsuperuser
+
+5. Run the Development Server:
+   python manage.py runserver
+
+6. Open in Browser:
+   http://127.0.0.1:8000/
+
+===========================================
+WHAT EACH COMMAND DOES:
+===========================================
+
+1. pip install -r requirements.txt
+   - Installs Django, Pillow, and django-filter
+
+2. python manage.py makemigrations
+   - Creates migration files for database changes
+
+3. python manage.py migrate
+   - Applies migrations to create database tables
+
+4. python manage.py create_categories
+   - Creates categories: Laptops, Phones, Cars, Furniture, etc.
+
+5. python manage.py createsuperuser
+   - Creates admin account for /admin/ panel
+
+6. python manage.py runserver
+   - Starts the development server
+
+===========================================
+TROUBLESHOOTING:
+===========================================
+
+If you get "pip not found":
+   - Use: python -m pip install -r requirements.txt
+
+If you get "python not found":
+   - Use: python3 instead of python
+   - Or: py instead of python (on Windows)
+
+If images don't display:
+   - Make sure media/ folder exists
+   - Restart the server
+
+If categories are missing:
+   - Run: python manage.py create_categories
+
+===========================================
+
+

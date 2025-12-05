@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} - Classified Marketplace{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ category.icon }} {{ category.name }}</h1>
+    <p>Browse all items in this category</p>
+</div>
+
+{% if listings %}
+<div class="listings-grid">
+    {% for listing in listings %}
+    <a href="{% url 'listings:listing_detail' listing.pk %}" class="listing-card">
+        <img src="{{ listing.image_url }}" alt="{{ listing.title }}" class="listing-image">
+        <div class="listing-info">
+            <h3 class="listing-title">{{ listing.title }}</h3>
+            <div class="listing-category">{{ listing.category.name }}</div>
+            <p class="listing-description">{{ listing.description }}</p>
+            <div class="listing-price">{{ listing.price_display }}</div>
+            <div class="listing-meta">
+                <span>By {{ listing.owner.username }}</span>
+                <span>{{ listing.created_at|date:"M d, Y" }}</span>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+    {% endif %}
+    
+    <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">🔍</div>
+    <p>No listings found in this category.</p>
+    <a href="{% url 'listings:create_listing' %}" class="btn btn-primary" style="margin-top: 1rem;">Post First Item</a>
+</div>
+{% endif %}
+
+{% if image_matches %}
+<div style="margin-top: 3rem;">
+    <h2 style="color: var(--dark-color); margin-bottom: 1rem;">More from around the web</h2>
+    <div class="listings-grid">
+        {% for img in image_matches %}
+        <div class="listing-card">
+            <img src="{{ img.url }}" alt="{{ img.title }}" class="listing-image">
+            <div class="listing-info">
+                <h3 class="listing-title">{{ img.title }}</h3>
+                <div class="listing-category">{% if img.photographer %}Photo by {{ img.photographer }}{% else %}Related image{% endif %}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
